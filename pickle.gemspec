@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ian White"]
-  s.date = %q{2010-05-13}
+  s.date = %q{2010-05-23}
   s.description = %q{Easy model creation and reference in your cucumber features}
   s.email = %q{ian.w.white@gmail.com}
   s.extra_rdoc_files = [

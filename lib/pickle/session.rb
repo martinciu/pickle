@@ -42,8 +42,14 @@ module Pickle
       raise ArgumentError, "Can't find a model with an ordinal (e.g. 1st user)" if name.is_a?(Integer)
       model_class = pickle_config.factories[factory].klass
       fields = fields.is_a?(Hash) ? parse_hash(fields) : parse_fields(fields)
-      if record = model_class.find(:first, :conditions => convert_models_to_attributes(model_class, fields))
-        store_model(factory, name, record)
+      if defined?(MongoMapper)
+        if record = model_class.first(convert_models_to_attributes(model_class, fields))
+          store_model(factory, name, record)
+        end
+      else
+        if record = model_class.find(:first, :conditions => convert_models_to_attributes(model_class, fields))
+          store_model(factory, name, record)
+        end
       end
     end
     
@@ -54,7 +60,11 @@ module Pickle
     def find_models(factory, fields = nil)
       models_by_index(factory).clear
       model_class = pickle_config.factories[factory].klass
-      records = model_class.find(:all, :conditions => convert_models_to_attributes(model_class, parse_fields(fields)))
+      if defined?(MongoMapper)
+        records = model_class.all(convert_models_to_attributes(model_class, parse_fields(fields)))
+      else
+        records = model_class.find(:all, :conditions => convert_models_to_attributes(model_class, parse_fields(fields)))
+      end
       records.each {|record| store_model(factory, nil, record)}
     end
     
